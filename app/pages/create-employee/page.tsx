@@ -1,21 +1,20 @@
 // pages/index.tsx
 'use client';
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { z } from 'zod';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
 import { states } from '../../data/states';
-import Modal from 'react-modal';
 import Header from '@/app/components/Header';
+import Modal from '@/app/components/Modal';
 
 const schema = z.object({
 	firstName: z.string().min(1, { message: 'First name is required' }),
 	lastName: z.string().min(1, { message: 'Last name is required' }),
 	email: z.string().email({ message: 'Invalid email address' }),
-	dateOfBirth: z.date(),
-	startDate: z.date(),
+	dateOfBirth: z.string().date(),
+	startDate: z.string().date(),
 	street: z.string().min(1, { message: 'Street is required' }),
 	city: z.string().min(1, { message: 'City is required' }),
 	state: z.string().min(1, { message: 'State is required' }),
@@ -44,14 +43,16 @@ const CreateEmployee: React.FC = () => {
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 	});
-
+	const onSubmit = (data: any) => {
+		alert('Submit : ' + JSON.stringify(data, null, 2));
+	};
 	const saveEmployee = () => {
 		const employees = JSON.parse(localStorage.getItem('employees') || '[]');
 		const employee = {
 			firstName,
 			lastName,
-			dateOfBirth: dateOfBirth?.toLocaleDateString(),
-			startDate: startDate?.toLocaleDateString(),
+			dateOfBirth,
+			startDate,
 			department,
 			street,
 			city,
@@ -60,164 +61,262 @@ const CreateEmployee: React.FC = () => {
 		};
 		employees.push(employee);
 		localStorage.setItem('employees', JSON.stringify(employees));
-		setModalIsOpen(true);
 	};
 
 	return (
-		<div className="w-full h-full mx-auto p-4">
+		<div className="w-full h-full mx-auto">
 			<Header />
-			<h2 className="bg-primary-foreground w-48 m-2 p-2 rounded-md">
-				Create an Employee
-			</h2>
-			<form onSubmit={event => event.preventDefault()}>
-				<div>
-					<label htmlFor="firstName">First Name</label>
-					<Input
-						id="firstName"
-						{...register('firstName')}
-						value={firstName}
-						onChange={e => setFirstName(e.target.value)}
-					/>
-					{errors.firstName && (
-						<p className="text-red-400">{errors.firstName.message}</p>
-					)}
-				</div>
-				<div>
-					<label htmlFor="lastName">Last Name</label>
-					<Input
-						id="lastName"
-						{...register('lastName')}
-						value={lastName}
-						onChange={e => setLastName(e.target.value)}
-					/>
-					{errors.lastName && (
-						<p className="text-red-400">{errors.lastName.message}</p>
-					)}
-				</div>
-				<div>
-					<label htmlFor="email">Email</label>
-					<Input id="email" type="email" {...register('email')} />
-					{errors.email && (
-						<p className="text-red-400">{errors.email.message}</p>
-					)}
-				</div>
-				<div>
-					<label htmlFor="dateOfBirth">Date of Birth</label>
+			<div className="flex justify-center items-center min-h-screen bg-green-50">
+				<div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+					<h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+						Create an Employee
+					</h2>
+					<form onSubmit={handleSubmit(saveEmployee)} className="space-y-6">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<label
+									htmlFor="firstName"
+									className="block text-sm font-medium text-gray-700 mb-1"
+								>
+									First Name
+								</label>
+								<Input
+									id="firstName"
+									{...register('firstName')}
+									value={firstName}
+									onChange={e => setFirstName(e.target.value)}
+									className="w-full"
+								/>
+								{errors.firstName && (
+									<p className="mt-1 text-sm text-red-600">
+										{errors.firstName.message}
+									</p>
+								)}
+							</div>
+							<div>
+								<label
+									htmlFor="lastName"
+									className="block text-sm font-medium text-gray-700 mb-1"
+								>
+									Last Name
+								</label>
+								<Input
+									id="lastName"
+									{...register('lastName')}
+									value={lastName}
+									onChange={e => setLastName(e.target.value)}
+									className="w-full"
+								/>
+								{errors.lastName && (
+									<p className="mt-1 text-sm text-red-600">
+										{errors.lastName.message}
+									</p>
+								)}
+							</div>
+						</div>
 
-					<Input
-						id="dateOfBirth"
-						type="date"
-						{...register('dateOfBirth')}
-						value={dateOfBirth}
-						onChange={e => setStreet(e.target.value)}
-					/>
-					{errors.dateOfBirth && (
-						<p className="text-red-400">{errors.dateOfBirth.message}</p>
-					)}
-				</div>
-				<div>
-					<label htmlFor="startDate">Start Date</label>
-					<Input
-						id="startDate"
-						type="date"
-						{...register('startDate')}
-						value={startDate}
-						onChange={e => setStreet(e.target.value)}
-					/>
-					{errors.startDate && (
-						<p className="text-red-400">{errors.startDate.message}</p>
-					)}
-				</div>
+						<div>
+							<label
+								htmlFor="email"
+								className="block text-sm font-medium text-gray-700 mb-1"
+							>
+								Email
+							</label>
+							<Input
+								id="email"
+								type="email"
+								{...register('email')}
+								className="w-full"
+							/>
+							{errors.email && (
+								<p className="mt-1 text-sm text-red-600">
+									{errors.email.message}
+								</p>
+							)}
+						</div>
 
-				<div className="bg-blue-500 p-4 m4 gap-4 rounded-xl flex flex-col">
-					<h3>Address</h3>
-					<div className=" items-center gap-2">
-						<label htmlFor="street">Street</label>
-						<Input
-							id="street"
-							{...register('street')}
-							value={street}
-							onChange={e => setStreet(e.target.value)}
-						/>
-						{errors.street && (
-							<p className="text-red-400">{errors.street.message}</p>
-						)}
-					</div>
-					<div className=" items-center gap-2">
-						<label htmlFor="city">City</label>
-						<Input
-							id="city"
-							{...register('city')}
-							value={city}
-							onChange={e => setCity(e.target.value)}
-						/>
-						{errors.city && (
-							<p className="text-red-400">{errors.city.message}</p>
-						)}
-					</div>
-					<div className="flex flex-col">
-						<label htmlFor="state">State</label>
-						<select
-							id="state"
-							{...register('state')}
-							className="w-1/2 bg-primary h-10 rounded-md hover:bg-primary-foreground"
-							value={state}
-							onChange={e => setState(e.target.value)}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<label
+									htmlFor="dateOfBirth"
+									className="block text-sm font-medium text-gray-700 mb-1"
+								>
+									Date of Birth
+								</label>
+								<Input
+									id="dateOfBirth"
+									type="date"
+									{...register('dateOfBirth')}
+									value={dateOfBirth}
+									onChange={e => setDateOfBirth(e.target.value)}
+									className="w-full"
+								/>
+								{errors.dateOfBirth && (
+									<p className="mt-1 text-sm text-red-600">
+										{errors.dateOfBirth.message}
+									</p>
+								)}
+							</div>
+							<div>
+								<label
+									htmlFor="startDate"
+									className="block text-sm font-medium text-gray-700 mb-1"
+								>
+									Start Date
+								</label>
+								<Input
+									id="startDate"
+									type="date"
+									{...register('startDate')}
+									value={startDate}
+									onChange={e => setStartDate(e.target.value)}
+									className="w-full"
+								/>
+								{errors.startDate && (
+									<p className="mt-1 text-sm text-red-600">
+										{errors.startDate.message}
+									</p>
+								)}
+							</div>
+						</div>
+
+						<div className="bg-green-50 p-6 rounded-lg">
+							<h3 className="text-lg font-semibold mb-4 text-primary">
+								Address
+							</h3>
+							<div className="space-y-4">
+								<div>
+									<label
+										htmlFor="street"
+										className="block text-sm font-medium text-gray-700 mb-1"
+									>
+										Street
+									</label>
+									<Input
+										id="street"
+										{...register('street')}
+										value={street}
+										onChange={e => setStreet(e.target.value)}
+										className="w-full"
+									/>
+									{errors.street && (
+										<p className="mt-1 text-sm text-red-600">
+											{errors.street.message}
+										</p>
+									)}
+								</div>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+									<div>
+										<label
+											htmlFor="city"
+											className="block text-sm font-medium text-gray-700 mb-1"
+										>
+											City
+										</label>
+										<Input
+											id="city"
+											{...register('city')}
+											value={city}
+											onChange={e => setCity(e.target.value)}
+											className="w-full"
+										/>
+										{errors.city && (
+											<p className="mt-1 text-sm text-red-600">
+												{errors.city.message}
+											</p>
+										)}
+									</div>
+									<div>
+										<label
+											htmlFor="state"
+											className="block text-sm font-medium text-gray-700 mb-1"
+										>
+											State
+										</label>
+										<select
+											id="state"
+											{...register('state')}
+											className="w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+											value={state}
+											onChange={e => setState(e.target.value)}
+										>
+											{states.map(state => (
+												<option
+													key={state.abbreviation}
+													value={state.abbreviation}
+												>
+													{state.name}
+												</option>
+											))}
+										</select>
+										{errors.state && (
+											<p className="mt-1 text-sm text-red-600">
+												{errors.state.message}
+											</p>
+										)}
+									</div>
+								</div>
+								<div>
+									<label
+										htmlFor="zipCode"
+										className="block text-sm font-medium text-gray-700 mb-1"
+									>
+										Zip Code
+									</label>
+									<Input
+										id="zipCode"
+										{...register('zipCode')}
+										value={zipCode}
+										onChange={e => setZipCode(e.target.value)}
+										className="w-full"
+									/>
+									{errors.zipCode && (
+										<p className="mt-1 text-sm text-red-600">
+											{errors.zipCode.message}
+										</p>
+									)}
+								</div>
+							</div>
+						</div>
+
+						<div>
+							<label
+								htmlFor="department"
+								className="block text-sm font-medium text-gray-700 mb-1"
+							>
+								Department
+							</label>
+							<select
+								id="department"
+								{...register('department')}
+								className="w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary-foreground"
+								value={department}
+								onChange={e => setDepartment(e.target.value)}
+							>
+								<option>Sales</option>
+								<option>Marketing</option>
+								<option>Engineering</option>
+								<option>Human Resources</option>
+								<option>Legal</option>
+							</select>
+							{errors.department && (
+								<p className="mt-1 text-sm text-red-600">
+									{errors.department.message}
+								</p>
+							)}
+						</div>
+
+						<button
+							type="submit"
+							// onClick={saveEmployee}
+							className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
 						>
-							{states.map(state => (
-								<option key={state.abbreviation} value={state.abbreviation}>
-									{state.name}
-								</option>
-							))}
-						</select>
-						{errors.state && (
-							<p className="text-red-400">{errors.state.message}</p>
-						)}
-					</div>
-					<div className=" items-center gap-2">
-						<label htmlFor="zipCode">Zip Code</label>
-						<Input
-							id="zipCode"
-							{...register('zipCode')}
-							value={zipCode}
-							onChange={e => setZipCode(e.target.value)}
-						/>
-						{errors.zipCode && (
-							<p className="text-red-400">{errors.zipCode.message}</p>
-						)}
-					</div>
+							Save
+						</button>
+					</form>
 				</div>
-				<div>
-					<label htmlFor="department" className="flex flex-col">
-						Department
-					</label>
-
-					<select
-						id="department"
-						{...register('department')}
-						className="w-1/2 bg-primary h-10 rounded-md hover:bg-primary-foreground"
-						value={department}
-						onChange={e => setDepartment(e.target.value)}
-					>
-						<option>Sales</option>
-						<option>Marketing</option>
-						<option>Engineering</option>
-						<option>Human Resources</option>
-						<option>Legal</option>
-					</select>
-
-					{errors.department && (
-						<p className="text-red-400">{errors.department.message}</p>
-					)}
-				</div>
-				<button type="submit" onClick={saveEmployee}>
-					Save
-				</button>
-			</form>
-			<Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)}>
-				<div>Employee Created!</div>
-				<button onClick={() => setModalIsOpen(false)}>Close</button>
-			</Modal>
+			</div>
+			<Modal />
 		</div>
 	);
 };
