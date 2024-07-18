@@ -1,13 +1,11 @@
 'use client';
-import CreateEmployee from './pages/create-employee/page';
 import Header from './components/Header';
-import Image from 'next/image';
-import healthImage from '../app/assets/images/healthiswealth.jpg';
+import Footer from './components/Footer';
 const Home = () => {
 	return (
-		<div className="">
+		<div className="flex flex-col min-h-screen">
 			<Header />
-			<div className="flex flex-col justify-center items-center p-10">
+			<div className="flex-grow flex flex-col justify-center items-center p-10">
 				<h1>Notre projet</h1>
 
 				<p className="w-1/2 h-1/2 bg-green-100 rounded-xl p-4">
@@ -23,6 +21,7 @@ const Home = () => {
 					explicabo libero optio doloremque veniam veritatis voluptatem.
 				</p>
 			</div>
+			<Footer />
 		</div>
 	);
 };
