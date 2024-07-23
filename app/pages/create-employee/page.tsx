@@ -6,8 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Input } from '@/components/ui/input';
 import { states } from '../../data/states';
+import { departments } from '@/app/data/departments';
 import Header from '@/app/components/Header';
 import Modal from '@/app/components/Modal';
+import Footer from '@/app/components/Footer';
+import DropDown from '@/app/components/DropDown';
 
 const schema = z.object({
 	firstName: z.string().min(1, { message: 'First name is required' }),
@@ -35,6 +38,8 @@ const CreateEmployee: React.FC = () => {
 	const [zipCode, setZipCode] = useState('');
 	const [department, setDepartment] = useState('Sales');
 	const [modalIsOpen, setModalIsOpen] = useState(false);
+	const stateNames = states.map(state => state.name);
+	const departmentNames = departments.map(department => department.name);
 	const {
 		register,
 		handleSubmit,
@@ -43,9 +48,7 @@ const CreateEmployee: React.FC = () => {
 	} = useForm<FormData>({
 		resolver: zodResolver(schema),
 	});
-	const onSubmit = (data: any) => {
-		alert('Submit : ' + JSON.stringify(data, null, 2));
-	};
+
 	const saveEmployee = () => {
 		const employees = JSON.parse(localStorage.getItem('employees') || '[]');
 		const employee = {
@@ -56,18 +59,20 @@ const CreateEmployee: React.FC = () => {
 			department,
 			street,
 			city,
-			state,
+			states,
 			zipCode,
 		};
 		employees.push(employee);
 		localStorage.setItem('employees', JSON.stringify(employees));
+		setModalIsOpen(true);
 	};
 
 	return (
 		<div className="w-full h-full mx-auto">
 			<Header />
+
 			<div className="flex justify-center items-center min-h-screen bg-green-50">
-				<div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+				<div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl m-10">
 					<h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
 						Create an Employee
 					</h2>
@@ -180,7 +185,7 @@ const CreateEmployee: React.FC = () => {
 							</div>
 						</div>
 
-						<div className="bg-green-50 p-6 rounded-lg">
+						<div className="bg-green-100 p-6 rounded-lg">
 							<h3 className="text-lg font-semibold mb-4 text-primary">
 								Address
 							</h3>
@@ -236,7 +241,7 @@ const CreateEmployee: React.FC = () => {
 										<select
 											id="state"
 											{...register('state')}
-											className="w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+											className="w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary-foreground"
 											value={state}
 											onChange={e => setState(e.target.value)}
 										>
@@ -308,7 +313,6 @@ const CreateEmployee: React.FC = () => {
 
 						<button
 							type="submit"
-							// onClick={saveEmployee}
 							className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-foreground focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-300"
 						>
 							Save
@@ -316,7 +320,12 @@ const CreateEmployee: React.FC = () => {
 					</form>
 				</div>
 			</div>
-			<Modal />
+			<DropDown items={departmentNames} />
+			<DropDown items={stateNames} />
+			{modalIsOpen && (
+				<Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
+			)}
+			<Footer />
 		</div>
 	);
 };
