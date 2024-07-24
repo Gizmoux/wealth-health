@@ -1,21 +1,64 @@
-import { useState } from 'react';
+import {
+	SetStateAction,
+	AwaitedReactNode,
+	JSXElementConstructor,
+	Key,
+	ReactElement,
+	ReactNode,
+	ReactPortal,
+	useState,
+} from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-const DropDown = ({ items }) => {
+interface DropDownProps {
+	items: string[];
+	name: string;
+	onSelect: (value: string) => void;
+}
+const DropDown: React.FC<DropDownProps> = ({ items, name }) => {
 	const [isChevronClicked, setIsChevronClicked] = useState(false);
+	const [selectedValue, setSelectedValue] = useState('department');
+
+	const handleClickValue = (item: SetStateAction<string>) => {
+		setSelectedValue(item);
+		setIsChevronClicked(false);
+	};
+
 	const handleChevronToggle = () => {
 		setIsChevronClicked(!isChevronClicked);
 	};
 
 	return (
 		<div className="container">
-			<div className="flex">
-				<p>Dropdown</p>
+			<div className="flex bg-red-400 w-full gap-5 p-5 m-5 rounded-md">
+				<p>{selectedValue}</p>
+
 				{isChevronClicked && (
 					<div>
 						<ul>
-							{items.map((item, index) => (
-								<li key={index}>{item}</li>
-							))}
+							{items.map(
+								(
+									item:
+										| string
+										| number
+										| bigint
+										| boolean
+										| ReactElement<any, string | JSXElementConstructor<any>>
+										| Iterable<ReactNode>
+										| ReactPortal
+										| Promise<AwaitedReactNode>
+										| null
+										| undefined,
+									index: Key | null | undefined
+								) => (
+									<li
+										key={index}
+										onClick={() => handleClickValue(item)}
+										value={selectedValue}
+									>
+										{item}
+									</li>
+								)
+							)}
 						</ul>
 					</div>
 				)}
