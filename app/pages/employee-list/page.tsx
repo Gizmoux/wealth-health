@@ -2,13 +2,32 @@
 import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import 'tailwindcss/tailwind.css';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 
 const EmployeeList: React.FC = () => {
 	const [employees, setEmployees] = useState([]);
+	const [search, setSearch] = useState('');
+	const [filteredResults, setFilteredResults] = useState<any[]>([]);
 
+	const filterEmployees = (searchValue: string, employees: any[]) => {
+		const filteredEmployees = employees.filter(employee =>
+			Object.values(employee).some(value =>
+				String(value).toLowerCase().includes(searchValue.toLowerCase())
+			)
+		);
+		console.log('filteredEmployees', filteredEmployees);
+
+		return filteredEmployees;
+	};
+
+	const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchValue = event.target.value;
+		setSearch(searchValue);
+	};
+	useEffect(() => {
+		setFilteredResults(filterEmployees(search, employees));
+	}, [search, employees]);
 	useEffect(() => {
 		const storedEmployees = JSON.parse(
 			localStorage.getItem('employees') || '[]'
@@ -64,10 +83,10 @@ const EmployeeList: React.FC = () => {
 					</h2>
 					<div className="flex items-center gap-2">
 						<label htmlFor="">Search</label>
-						<Input />
+						<Input onChange={handleChangeSearch} value={search} />
 					</div>
 				</div>
-				<DataTable columns={columns} data={employees} pagination />
+				<DataTable columns={columns} data={filteredResults} pagination />
 			</main>
 
 			<Footer />
