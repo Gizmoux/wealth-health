@@ -1,6 +1,10 @@
 import React from 'react';
 import { CircleX } from 'lucide-react';
-const Modal = ({ isOpen, onClose }) => {
+interface ModalProps {
+	isOpen: boolean;
+	onClose: () => void;
+}
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
 	const handleCloseModale = () => {
 		onClose();
 	};
