@@ -1,6 +1,6 @@
 // pages/index.tsx
 'use client';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -34,12 +34,14 @@ const CreateEmployee: React.FC = () => {
 	const [startDate, setStartDate] = useState<Date | null>(null);
 	const [street, setStreet] = useState('');
 	const [city, setCity] = useState('');
-	const [state, setState] = useState('');
+	const [state, setState] = useState('Alabama');
 	const [zipCode, setZipCode] = useState('');
 	const [department, setDepartment] = useState('Sales');
+
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 	const stateNames = states.map(state => state.name);
 	const departmentNames = departments.map(department => department.name);
+
 	const {
 		register,
 		handleSubmit,
@@ -320,8 +322,13 @@ const CreateEmployee: React.FC = () => {
 					</form>
 				</div>
 			</div>
-			<DropDown items={departmentNames} />
-			<DropDown items={stateNames} />
+			<DropDown
+				items={departmentNames}
+				name={department}
+				onSelect={setDepartment}
+			/>
+			<DropDown items={stateNames} name={states} onSelect={setState} />
+
 			{modalIsOpen && (
 				<Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
 			)}
