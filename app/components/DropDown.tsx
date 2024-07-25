@@ -16,7 +16,7 @@ interface DropDownProps {
 }
 const DropDown: React.FC<DropDownProps> = ({ items, name }) => {
 	const [isChevronClicked, setIsChevronClicked] = useState(false);
-	const [selectedValue, setSelectedValue] = useState('department');
+	const [selectedValue, setSelectedValue] = useState('valeur défault');
 
 	const handleClickValue = (item: SetStateAction<string>) => {
 		setSelectedValue(item);
