@@ -1,6 +1,5 @@
-// pages/index.tsx
 'use client';
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -30,8 +29,8 @@ type FormData = z.infer<typeof schema>;
 const CreateEmployee: React.FC = () => {
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
-	const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
-	const [startDate, setStartDate] = useState<Date | null>(null);
+	const [dateOfBirth, setDateOfBirth] = useState('');
+	const [startDate, setStartDate] = useState('');
 	const [street, setStreet] = useState('');
 	const [city, setCity] = useState('');
 	const [state, setState] = useState('Alabama');
@@ -327,7 +326,7 @@ const CreateEmployee: React.FC = () => {
 				name={department}
 				onSelect={setDepartment}
 			/>
-			<DropDown items={stateNames} name={states} onSelect={setState} />
+			{/* <DropDown items={stateNames} name={states} onSelect={setState} /> */}
 
 			{modalIsOpen && (
 				<Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
