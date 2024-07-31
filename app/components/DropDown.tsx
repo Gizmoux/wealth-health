@@ -1,13 +1,5 @@
-import {
-	SetStateAction,
-	AwaitedReactNode,
-	JSXElementConstructor,
-	Key,
-	ReactElement,
-	ReactNode,
-	ReactPortal,
-	useState,
-} from 'react';
+'use client';
+import { SetStateAction, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 interface DropDownProps {
 	items: string[];
@@ -35,30 +27,15 @@ const DropDown: React.FC<DropDownProps> = ({ items, name }) => {
 				{isChevronClicked && (
 					<div>
 						<ul>
-							{items.map(
-								(
-									item:
-										| string
-										| number
-										| bigint
-										| boolean
-										| ReactElement<any, string | JSXElementConstructor<any>>
-										| Iterable<ReactNode>
-										| ReactPortal
-										| Promise<AwaitedReactNode>
-										| null
-										| undefined,
-									index: Key | null | undefined
-								) => (
-									<li
-										key={index}
-										onClick={() => handleClickValue(item)}
-										value={selectedValue}
-									>
-										{item}
-									</li>
-								)
-							)}
+							{items.map((item, index) => (
+								<li
+									key={index}
+									onClick={() => handleClickValue(item)}
+									value={selectedValue}
+								>
+									{item}
+								</li>
+							))}
 						</ul>
 					</div>
 				)}

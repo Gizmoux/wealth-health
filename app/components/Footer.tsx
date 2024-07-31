@@ -1,3 +1,4 @@
+'use client';
 import { Copyright } from 'lucide-react';
 
 const Footer = () => {

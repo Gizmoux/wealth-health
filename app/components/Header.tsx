@@ -1,5 +1,5 @@
+'use client';
 import logo from '../assets/images/logowealth.png';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 const Header = () => {
@@ -8,6 +8,7 @@ const Header = () => {
 			<div className="container mx-auto px-4 py-3 flex items-center justify-between">
 				<div className="flex items-center">
 					<Image
+						priority
 						src={logo}
 						width={120}
 						height={120}

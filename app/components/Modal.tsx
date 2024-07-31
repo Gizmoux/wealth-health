@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import { CircleX } from 'lucide-react';
 interface ModalProps {
