@@ -21,7 +21,7 @@ const DropDown: React.FC<DropDownProps> = ({ items, name }) => {
 
 	return (
 		<div className="container">
-			<div className="flex bg-red-400 w-full gap-5 p-5 m-5 rounded-md">
+			<div className="flex bg-blue-400 w-full gap-5 p-5 m-5 rounded-md">
 				<p>{selectedValue}</p>
 
 				{isChevronClicked && (
