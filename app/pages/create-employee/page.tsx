@@ -33,7 +33,7 @@ const CreateEmployee: React.FC = () => {
 	const [startDate, setStartDate] = useState('');
 	const [street, setStreet] = useState('');
 	const [city, setCity] = useState('');
-	const [state, setState] = useState('Alabama');
+	const [state, setState] = useState('');
 	const [zipCode, setZipCode] = useState('');
 	const [department, setDepartment] = useState('Sales');
 
