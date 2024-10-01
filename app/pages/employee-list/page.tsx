@@ -29,10 +29,9 @@ const EmployeeList: React.FC = () => {
 		setFilteredResults(filterEmployees(search, employees));
 	}, [search, employees]);
 	useEffect(() => {
-		const storedEmployees = JSON.parse(
-			localStorage.getItem('employees') || '[]'
-		);
-		setEmployees(storedEmployees);
+		const storedEmployees = localStorage.getItem('employees') || '[]';
+
+		setEmployees(JSON.parse(storedEmployees));
 	}, []);
 
 	const columns = [
