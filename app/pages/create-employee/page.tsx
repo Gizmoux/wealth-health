@@ -7,9 +7,11 @@ import { Input } from '@/components/ui/input';
 import { states } from '../../data/states';
 import { departments } from '@/app/data/departments';
 import Header from '@/app/components/Header';
-import Modal from '@/app/components/Modal';
+// import Modal from '@/app/components/Modal';
 import Footer from '@/app/components/Footer';
 import DropDown from '@/app/components/DropDown';
+import { useEmployees } from '@/app/context/EmployeeContext';
+import { Modal } from 'easy-modale';
 
 const schema = z.object({
 	firstName: z.string().min(1, { message: 'First name is required' }),
@@ -50,8 +52,8 @@ const CreateEmployee: React.FC = () => {
 		resolver: zodResolver(schema),
 	});
 
+	const { addEmployee } = useEmployees();
 	const saveEmployee = () => {
-		const employees = JSON.parse(localStorage.getItem('employees') || '[]');
 		const employee = {
 			firstName,
 			lastName,
@@ -63,8 +65,8 @@ const CreateEmployee: React.FC = () => {
 			state,
 			zipCode,
 		};
-		employees.push(employee);
-		localStorage.setItem('employees', JSON.stringify(employees));
+
+		addEmployee(employee);
 		setModalIsOpen(true);
 	};
 
@@ -329,9 +331,25 @@ const CreateEmployee: React.FC = () => {
       /> */}
 			{/* <DropDown items={stateNames} name={states} onSelect={setState} /> */}
 
-			{modalIsOpen && (
+			{/* {modalIsOpen && (
 				<Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} />
+			)} */}
+			{modalIsOpen && (
+				<Modal
+					isOpen={modalIsOpen}
+					onClose={() => setModalIsOpen(false)}
+					overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+					contentClassName="bg-primary-foreground w-1/4 p-4 rounded-md flex justify-between items-center bg-green-500"
+				>
+					Employee Created!
+				</Modal>
 			)}
+			{/* <Modal
+				isOpen={false}
+				onClose={function (): void {
+					throw new Error('Function not implemented.');
+				}}
+			/> */}
 			<Footer />
 		</div>
 	);
