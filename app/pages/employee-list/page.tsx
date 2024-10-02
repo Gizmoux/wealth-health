@@ -4,22 +4,30 @@ import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
+import { useEmployees } from '@/app/context/EmployeeContext';
 
 const EmployeeList: React.FC = () => {
-	const [employees, setEmployees] = useState([]);
+	// const [employees, setEmployees] = useState([]);
+	const { employees } = useEmployees();
 	const [search, setSearch] = useState('');
 	const [filteredResults, setFilteredResults] = useState<any[]>([]);
-
 	const filterEmployees = (searchValue: string, employees: any[]) => {
-		const filteredEmployees = employees.filter(employee =>
+		return employees.filter(employee =>
 			Object.values(employee).some(value =>
 				String(value).toLowerCase().includes(searchValue.toLowerCase())
 			)
 		);
-		console.log('filteredEmployees', filteredEmployees);
-
-		return filteredEmployees;
 	};
+	// const filterEmployees = (searchValue: string, employees: any[]) => {
+	// 	const filteredEmployees = employees.filter(employee =>
+	// 		Object.values(employee).some(value =>
+	// 			String(value).toLowerCase().includes(searchValue.toLowerCase())
+	// 		)
+	// 	);
+	// 	console.log('filteredEmployees', filteredEmployees);
+
+	// 	return filteredEmployees;
+	// };
 
 	const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const searchValue = event.target.value;
@@ -28,11 +36,11 @@ const EmployeeList: React.FC = () => {
 	useEffect(() => {
 		setFilteredResults(filterEmployees(search, employees));
 	}, [search, employees]);
-	useEffect(() => {
-		const storedEmployees = localStorage.getItem('employees') || '[]';
+	// useEffect(() => {
+	// 	const storedEmployees = localStorage.getItem('employees') || '[]';
 
-		setEmployees(JSON.parse(storedEmployees));
-	}, []);
+	// 	setEmployees(JSON.parse(storedEmployees));
+	// }, []);
 
 	const columns = [
 		{
